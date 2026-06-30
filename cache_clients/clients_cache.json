@@ -1,0 +1,41 @@
+[ {
+  "numeroClient" : "666",
+  "adresse" : "toliara",
+  "solde" : 600.00,
+  "id" : 134,
+  "nom" : "Marc",
+  "timestamp" : "2026-06-17T10:37:21.1576517",
+  "status" : "SYNCED"
+}, {
+  "numeroClient" : "77",
+  "adresse" : "xx",
+  "solde" : 55.00,
+  "id" : 135,
+  "nom" : "xx",
+  "timestamp" : "2026-06-17T10:37:21.1576517",
+  "status" : "SYNCED"
+}, {
+  "numeroClient" : "222",
+  "adresse" : "yyy",
+  "solde" : 111111.00,
+  "id" : 133,
+  "nom" : "yyy",
+  "timestamp" : "2026-06-17T10:37:21.1576517",
+  "status" : "SYNCED"
+}, {
+  "numeroClient" : "555",
+  "adresse" : "zz",
+  "solde" : 11.00,
+  "id" : 136,
+  "nom" : "zz",
+  "timestamp" : "2026-06-17T10:37:21.1576517",
+  "status" : "SYNCED"
+}, {
+  "numeroClient" : "6",
+  "adresse" : "kkkk",
+  "solde" : 33.00,
+  "id" : 137,
+  "nom" : "kkkkk",
+  "timestamp" : "2026-06-17T10:37:21.1576517",
+  "status" : "SYNCED"
+} ]

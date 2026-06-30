@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${isEdit} ? 'Modifier un client' : 'Ajouter un client'">Formulaire client</title>
+
+    <!-- Bootstrap CSS local -->
+    <link th:href="@{/bootstrap/css/bootstrap.css}" rel="stylesheet">
+    <style>
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .form-title {
+            color: #0d6efd;
+            border-bottom: 3px solid #0d6efd;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+        }
+        .form-label {
+            font-weight: 600;
+            color: #333;
+        }
+        .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+        .btn-submit {
+            padding: 10px 40px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .mode-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .mode-online {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .mode-offline {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffc107;
+        }
+        .mode-warning {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .required-star {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .help-text {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <div class="form-container">
+        <h2 class="form-title" th:text="${isEdit} ? '✏️ Modifier un client' : '➕ Ajouter un client'">
+            Formulaire client
+        </h2>
+
+        <!-- ⭐ Badge d'information sur le mode -->
+        <div th:if="${mode == 'offline'}" class="mode-badge mode-offline">
+            ⚠️ Mode HORS LIGNE - Les données seront sauvegardées localement
+        </div>
+        <div th:if="${mode == 'online'}" class="mode-badge mode-online">
+            ✅ Mode EN LIGNE - Sauvegarde en base de données
+        </div>
+        <div th:if="${mode == 'offline_fallback'}" class="mode-badge mode-warning">
+            ⚠️ Mode DÉGRADÉ - Données sauvegardées localement
+        </div>
+
+        <!-- Formulaire -->
+        <form th:action="${isEdit} ? @{/clients/modifier} : @{/clients/sauvegarder}"
+              th:object="${client}"
+              method="post">
+
+            <!-- ⭐ CHAMP CACHÉ POUR L'ID (IMPORTANT POUR LA MODIFICATION) -->
+            <input type="hidden" th:field="*{id}" />
+
+            <!-- Numéro Client -->
+            <div class="mb-3">
+                <label for="numeroClient" class="form-label">
+                    Numéro client <span class="required-star">*</span>
+                </label>
+                <input type="text"
+                       class="form-control"
+                       id="numeroClient"
+                       th:field="*{numeroClient}"
+                       placeholder="Ex: C001"
+                       required>
+                <div class="help-text">Format recommandé : Cxxx</div>
+            </div>
+
+            <!-- Nom -->
+            <div class="mb-3">
+                <label for="nom" class="form-label">
+                    Nom <span class="required-star">*</span>
+                </label>
+                <input type="text"
+                       class="form-control"
+                       id="nom"
+                       th:field="*{nom}"
+                       placeholder="Ex: Dupont"
+                       required>
+            </div>
+
+            <!-- Adresse -->
+            <div class="mb-3">
+                <label for="adresse" class="form-label">
+                    Adresse <span class="required-star">*</span>
+                </label>
+                <input type="text"
+                       class="form-control"
+                       id="adresse"
+                       th:field="*{adresse}"
+                       placeholder="Ex: 12 rue de Paris, 75000 Paris"
+                       required>
+            </div>
+
+            <!-- Solde -->
+            <div class="mb-3">
+                <label for="solde" class="form-label">
+                    Solde <span class="required-star">*</span>
+                </label>
+                <div class="input-group">
+                    <span class="input-group-text">€</span>
+                    <input type="number"
+                           class="form-control"
+                           id="solde"
+                           th:field="*{solde}"
+                           step="0.01"
+                           min="0"
+                           placeholder="0.00"
+                           required>
+                </div>
+                <div class="help-text">Valeur minimale : 0.00 €</div>
+            </div>
+
+            <!-- Message d'information pour le mode hors ligne -->
+            <div th:if="${mode == 'offline'}" class="alert alert-warning mt-3">
+                <strong>⚠️ Mode hors ligne</strong>
+                <p class="mb-0 small">Ce client sera sauvegardé localement. La synchronisation sera effectuée automatiquement lors du retour en ligne.</p>
+            </div>
+
+            <!-- Boutons -->
+            <div class="d-flex justify-content-between mt-4">
+                <a th:href="@{/clients}" class="btn btn-secondary btn-submit">
+                    ❌ Annuler
+                </a>
+                <button type="submit" class="btn btn-primary btn-submit">
+                    💾 <span th:text="${isEdit} ? 'Modifier' : 'Ajouter'">Sauvegarder</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- SweetAlert JS local pour les messages flash -->
+<script th:src="@{/js/sweetalert.js}"></script>
+
+<!-- Bootstrap JS local -->
+<script th:src="@{/bootstrap/js/bootstrap.js}"></script>
+
+<script>
+    // ========== AFFICHER LES MESSAGES FLASH ==========
+    document.addEventListener('DOMContentLoaded', function() {
+        // Récupérer les messages flash depuis les attributs
+        const successMsg = document.querySelector('[th\\:text="${successMessage}"]')?.innerText;
+        const errorMsg = document.querySelector('[th\\:text="${errorMessage}"]')?.innerText;
+        const warningMsg = document.querySelector('[th\\:text="${warningMessage}"]')?.innerText;
+
+        if (successMsg && successMsg.trim() !== '' && !successMsg.includes('RedirectAttributes')) {
+            Swal.fire({
+                title: '✨ Succès !',
+                text: successMsg,
+                icon: 'success',
+                confirmButtonColor: '#28a745',
+                timer: 3000,
+                showConfirmButton: true
+            });
+        }
+
+        if (warningMsg && warningMsg.trim() !== '' && !warningMsg.includes('RedirectAttributes')) {
+            Swal.fire({
+                title: '⚠️ Attention',
+                text: warningMsg,
+                icon: 'warning',
+                confirmButtonColor: '#ffc107',
+                timer: 4000,
+                showConfirmButton: true
+            });
+        }
+
+        if (errorMsg && errorMsg.trim() !== '' && !errorMsg.includes('RedirectAttributes')) {
+            Swal.fire({
+                title: '❌ Erreur',
+                text: errorMsg,
+                icon: 'error',
+                confirmButtonColor: '#d33'
+            });
+        }
+
+        // Confirmation avant de quitter si des modifications ont été faites
+        const form = document.querySelector('form');
+        let formModified = false;
+
+        form.querySelectorAll('input').forEach(input => {
+            input.addEventListener('change', function() {
+                formModified = true;
+            });
+        });
+
+        // Afficher une confirmation si l'utilisateur tente de quitter avec des modifications
+        document.querySelectorAll('a.btn-secondary').forEach(link => {
+            link.addEventListener('click', function(e) {
+                if (formModified) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: '⚠️ Modifications non sauvegardées',
+                        text: 'Voulez-vous vraiment quitter sans sauvegarder ?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#dc3545',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: '✅ Quitter sans sauvegarder',
+                        cancelButtonText: '❌ Rester'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = link.getAttribute('href');
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
